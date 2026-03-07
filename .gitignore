@@ -1,0 +1,13 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Mac System Files
+.DS_Store
+
+# Data (Optional: keep this out if you want teachers to start with a fresh DB)
+data/*.json
+
+# IDE
+.vscode/
