@@ -20,6 +20,31 @@ class Task:
         self.parent_project = parent_project
         self.priority_score = 0
 
+    ## Priority Calculation Logic
+
+    def calculate_priority(self, current_user_energy):
+        # 1. Calculate T_rem (Time Remaining in minutes)
+        now = datetime.now()
+        time_diff = (self.deadline - now).total_seconds() / 60
+        
+        # 2. Handle the "Deadline Paradox" (Hard Override)
+        # If time remaining is less than 1.5x the task duration, 
+        # it bypasses all other logic to stay at the top.
+        if time_diff <= (1.5 * self.duration):
+            self.priority_score = -float('inf')  # Guaranteed #1 in Min-Heap
+            return self.priority_score
+
+        # 3. The Core Formula:
+        # We want a LOWER score for HIGHER priority (Min-Heap logic).
+        # We subtract (Energy * Difficulty) from Time Remaining.
+        # Higher Energy/Difficulty = Lower Score = Higher Priority.
+        
+        weight_factor = 10 # Constant to balance the units
+        adjustment = (current_user_energy * self.difficulty * weight_factor)
+        
+        self.priority_score = time_diff - adjustment
+        return self.priority_score
+
 class Goal:
     def __init__(self, title, category, metric_type, target_value, subject=None):
         self.id = str(uuid.uuid4())
