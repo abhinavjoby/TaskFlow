@@ -3,15 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Folio</title>
-    <script type="text/javascript" src="/eel.js"></script>
-    <style>
-        body{
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
-    </style>
+    <title>TaskFlow</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <p>hello world</p>
+
+    <div class="app-layout">
+        <main class="content-view">
+            <header class="view-header">
+                <div class="header-left">
+                    <h1>Good Afternoon!</h1>
+                    <p class="timestamp">2:41 Mon 9 Mar</p>
+                </div>
+
+                <nav class="glass-nav-inline">
+                    <div class="nav-container">
+                        <a href="index.html" class="nav-item active">main</a>
+                        <a href="calendar.html" class="nav-item">calendar</a>
+                        <a href="search.html" class="nav-item">search</a>
+                    </div>
+                </nav>
+
+                <div class="header-right">
+                    <div class="new-btn">+</div>
+                </div>
+            </header>
+
+            <div class="dashboard-scroll-lock">
+                <section class="wireframe-section">
+                    <h3>LineUp</h3>
+                    <div class="grid-row lineup-grid">
+                        <div class="wire-card"></div>
+                        <div class="wire-card"></div>
+                        <div class="wire-card"></div>
+                        <div class="wire-card"></div>
+                    </div>
+                </section>
+
+                <section class="wireframe-section">
+                    <h3>Goals</h3>
+                    <div class="grid-row goals-grid">
+                        <div class="wire-card goal"></div>
+                        <div class="wire-card goal"></div>
+                        <div class="wire-card goal"></div>
+                        <div class="wire-card add-goal"><span>+</span></div>
+                    </div>
+                </section>
+
+                <section class="wireframe-section">
+                    <h3>Dashboard</h3>
+                    <div class="grid-row dashboard-grid">
+                        <div class="wire-card dash"></div>
+                        <div class="wire-card dash"></div>
+                        <div class="wire-card dash"></div>
+                        <div class="wire-card dash"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <aside class="sidebar-urgent">
+            <div class="sidebar-fixed-top">
+                <div class="top-row">
+                    <div class="focus-trigger">focus mode</div>
+                    <div class="user-avatar"></div>
+                </div>
+                <h2>Urgent tasks</h2>
+                <div class="filter-pills">
+                    <span class="pill"></span>
+                    <span class="pill"></span>
+                    <span class="pill"></span>
+                    <span class="pill white"></span>
+                </div>
+            </div>
+
+            <div class="sidebar-scroll-area">
+                <div class="urgent-stack">
+                    <div class="wire-card mesh-gradient"></div>
+                    <div class="wire-card"></div>
+                    <div class="wire-card"></div>
+                    <div class="wire-card"></div>
+                    <div class="wire-card"></div>
+                    <div class="wire-card"></div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="/eel.js"></script>
 </body>
 </html>

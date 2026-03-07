@@ -3,6 +3,7 @@ import sys
 import os
 import uuid
 from datetime import datetime
+import tkinter as tk 
 
 # TASK CLASS DEFINITIONS 
 
@@ -88,19 +89,32 @@ class Project:
 
 # EEL INITIALIZATION 
 
+import eel
+import os
+import sys
+import tkinter as tk
+
 eel.init('web')
 
-# LAUNCH LOGIC 
+# Get exact screen resolution
+root = tk.Tk()
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+root.destroy()
+
+launch_settings = {
+    'size': (screen_width, screen_height), 
+    'position': (0, 0),
+    'mode': 'chrome',
+    'shutdown_delay': 1000,
+    'close_callback': None
+}
 
 try:
-    if sys.platform == "darwin":
-        comet_path = '/Applications/Comet.app/Contents/MacOS/Comet'
-        if os.path.exists(comet_path):
-            eel.browsers.set_path('chrome', comet_path)
-    
-    # size=(1280, 800) fits well on your MacBook Pro screen
-    eel.start('index.html', size=(1280, 800), mode='chrome')
-
-except (OSError, Exception) as e:
-    print(f"Error launching: {e}")
-    eel.start('index.html', size=(1280, 800), mode='default')
+    if sys.platform == "darwin" and os.path.exists('/Applications/Comet.app'):
+        eel.browsers.set_path('chrome', '/Applications/Comet.app/Contents/MacOS/Comet')
+    eel.start('index.html', **launch_settings)
+except Exception as e:
+    print(f"Standard launch failed: {e}")
+    launch_settings['mode'] = 'default'
+    eel.start('index.html', **launch_settings)
