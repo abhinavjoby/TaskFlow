@@ -28,7 +28,7 @@ class Task:
         now = datetime.now()
         time_diff = (self.deadline - now).total_seconds() / 60
         
-        # 2. Handle the "Deadline Paradox" (Hard Override)
+        # 2. Handle the Deadline Paradox (Hard Override)
         # If time remaining is less than 1.5x the task duration, 
         # it bypasses all other logic to stay at the top.
         if time_diff <= (1.5 * self.duration):
@@ -40,7 +40,7 @@ class Task:
         # We subtract (Energy * Difficulty) from Time Remaining.
         # Higher Energy/Difficulty = Lower Score = Higher Priority.
         
-        weight_factor = 10 # Constant to balance the units
+        weight_factor = 10 # Constant 
         adjustment = (current_user_energy * self.difficulty * weight_factor)
         
         self.priority_score = time_diff - adjustment
@@ -57,7 +57,7 @@ class Goal:
         self.subject = subject
         self.created_at = datetime.now()
 
-    def update_progress(self, value): # Fixed the double parenthesis here
+    def update_progress(self, value): 
         if self.metric_type == "BOOLEAN":
             self.current_value = True
         else:
@@ -89,14 +89,9 @@ class Project:
 
 # EEL INITIALIZATION 
 
-import eel
-import os
-import sys
-import tkinter as tk
-
 eel.init('web')
 
-# Get exact screen resolution
+# Get exact screen resolution for window size
 root = tk.Tk()
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
@@ -109,7 +104,7 @@ launch_settings = {
     'shutdown_delay': 1000,
     'close_callback': None
 }
-
+# Attempt to set browser on macOS, with a fallback to default if it fails for other platforms or if the path is incorrect. For better compatibility.
 try:
     if sys.platform == "darwin" and os.path.exists('/Applications/Comet.app'):
         eel.browsers.set_path('chrome', '/Applications/Comet.app/Contents/MacOS/Comet')
