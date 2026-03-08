@@ -197,7 +197,7 @@ body {
 
 /* 8. GRID & CARDS (FOR MAIN) */
 .wireframe-section h3 { font-size: 16px; margin-bottom: 12px; font-weight: 400; color: var(--text-dim); }
-.grid-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.grid-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; height:190px;}
 .wire-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--border-radius-apple); min-height: 125px; }
 .add-goal { display: flex; align-items: center; justify-content: center; border: 1px dashed var(--border-subtle); color: var(--text-dim); font-size: 22px; }
 
@@ -236,10 +236,11 @@ body {
 .urgent-stack { display: flex; flex-direction: column; gap: 12px; }
 .mesh-gradient { 
     height: 200px; 
-    background: linear-gradient(135deg, #1e3a8a, #991b1b); 
+    background: linear-gradient(135deg, #8a1e39, #d61515); 
     opacity: 0.8; 
     border: none;
 }
+
 
 /* SEARCH SPECIFIC LAYOUT */
 .search-main-zone {
@@ -301,34 +302,19 @@ body {
     width: 100%;
     overflow: hidden; /* Hide the cards that are outside the view */
     position: relative;
-    margin-top: 60px;
+    margin-top: 200px;
 }
 
 .subject-track {
     display: flex;
     gap: 15px;
     width: max-content; /* Allows the track to be as wide as all cards combined */
-    animation: scrollInfinite 30s linear infinite;
-}
-
-/* Pause animation on hover for better UX */
-.subject-track:hover {
-    animation-play-state: paused;
-}
-
-@keyframes scrollInfinite {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        /* Move the track left by half its width (one full set of cards) */
-        transform: translateX(calc(-50% - 7.5px)); /* 7.5px is half the gap */
-    }
 }
 
 .subject-card {
     flex: 0 0 160px; /* Fixed width for cards */
-    height: 380px;
+    height: 200px;
+    margin-top: 5px;
     background: #444;
     border: none;
     border-radius: var(--border-radius-apple);
