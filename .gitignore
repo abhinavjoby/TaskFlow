@@ -8,6 +8,7 @@ __pycache__/
 
 # Data (Optional: keep this out if you want teachers to start with a fresh DB)
 data/*.json
+data/*.csv
 
 # IDE
 .vscode/

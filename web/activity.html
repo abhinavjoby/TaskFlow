@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskflow - Activity</title>
+    <link rel="stylesheet" href="css/root.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script type="text/javascript" src="/eel.js"></script>
+    <style>
+        body {
+            height: 100vh;
+            overflow: hidden;
+            background-image: var(--bgImage);
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+        }
+
+        .back-btn {
+            background: var(--glassAColor);
+            color: var(--textPrimary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            backdrop-filter: blur(10px);
+            font-size: 1.2rem;
+            box-shadow: var(--glassAShadow);
+            border: none;
+            cursor: pointer;
+        }
+
+        .brand-title {
+            font-size: 2rem;
+            color: var(--textPrimary);
+        }
+
+        .profile-btn-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e09c1c; 
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            font-size: 1.2rem;
+        }
+
+        .activity-container {
+            flex: 1;
+            padding: 20px 10vw 80px 10vw;
+            display: flex;
+            justify-content: center;
+            min-height: 0;
+        }
+
+        .activity-card {
+            background: var(--glassBColor);
+            backdrop-filter: blur(var(--glassBlur));
+            -webkit-backdrop-filter: blur(var(--glassBlur));
+            border-radius: 25px;
+            padding: 40px;
+            width: 100%;
+            max-width: 1000px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            max-height: 100%;
+            box-sizing: border-box;
+        }
+
+        .activity-card::-webkit-scrollbar {
+            display: none;
+        }
+
+        .activity-table {
+            display: grid;
+            grid-template-columns: 2.5fr 0.8fr 0.8fr 0.8fr 1.2fr 0.8fr;
+            gap: 0 15px;
+            align-items: center;
+        }
+
+        .table-header {
+            font-size: 0.85rem;
+            color: var(--textSecondary);
+            font-weight: 500;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .table-cell {
+            padding: 14px 0;
+            font-size: 0.9rem;
+            color: var(--textPrimary);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            min-height: 44px;
+        }
+
+        .pill-tiny {
+            position: static !important;
+            right: auto !important;
+            top: auto !important;
+            display: inline-block;
+            border-radius: 15px;
+            padding: 3px 10px;
+            font-size: 0.75rem;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .status-completed { color: var(--pillColor7); }
+        .status-ongoing { color: var(--pillColor2); }
+        .status-overdue { color: var(--pillColor1); }
+        .status-pending { color: var(--textSecondary); }
+    </style>
+    <script>
+        let savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="index.html" class="back-btn sfMed">←</a>
+        <div class="brand-title instSerif">taskflow</div>
+        <div class="profile-btn-circle sfMed">👤</div>
+    </div>
+
+    <div class="activity-container">
+        <div class="activity-card">
+            <div class="activity-table" id="activityTable">
+                <div class="table-header sfMed">name</div>
+                <div class="table-header sfMed">type</div>
+                <div class="table-header sfMed">subject</div>
+                <div class="table-header sfMed">duration</div>
+                <div class="table-header sfMed">date</div>
+                <div class="table-header sfMed">status</div>
+                <!-- JS will populate rows -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script>
+        function getPillColor(subject) {
+            if (!subject || subject === 'General') return 'var(--pillColor1)';
+            let hash = 0;
+            for (let i = 0; i < subject.length; i++) hash += subject.charCodeAt(i);
+            const colors = ['--pillColor1','--pillColor2','--pillColor3','--pillColor4','--pillColor5','--pillColor6','--pillColor7','--pillColor8'];
+            return `var(${colors[hash % colors.length]})`;
+        }
+
+        function getStatusClass(status) {
+            const s = (status || '').toLowerCase();
+            if (s === 'completed' || s === 'done') return 'status-completed';
+            if (s === 'ongoing' || s === 'started') return 'status-ongoing';
+            if (s === 'overdue' || s === 'due') return 'status-overdue';
+            return 'status-pending';
+        }
+
+        function renderRow(name, type, subject, duration, date, status) {
+            const pillColor = getPillColor(subject);
+            const statusClass = getStatusClass(status);
+            return `
+                <div class="table-cell sfReg">${name}</div>
+                <div class="table-cell sfReg">${type}</div>
+                <div class="table-cell">
+                    <span class="pill-tiny" style="background:${pillColor};">${subject || 'General'}</span>
+                </div>
+                <div class="table-cell sfReg">${duration}</div>
+                <div class="table-cell sfReg">${date}</div>
+                <div class="table-cell sfMed ${statusClass}">${status}</div>
+            `;
+        }
+
+        async function loadActivity() {
+            const table = document.getElementById('activityTable');
+            let html = table.innerHTML; // Keep headers
+            
+            if (window.eel) {
+                const logs = await eel.get_activity_log()();
+                if (logs && logs.length > 0) {
+                    logs.forEach(log => {
+                        const d = new Date(log.timestamp);
+                        const dateStr = d.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ', ' + d.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+                        
+                        const name = log.name || log.action || '-';
+                        const type = log.entity_type || 'task';
+                        const subject = log.subject || 'General';
+                        const duration = log.duration || '-';
+                        const deadline = log.deadline === '-' ? dateStr : log.deadline;
+                        const status = (log.status || 'pending').toLowerCase();
+                        
+                        html += renderRow(name, type, subject, duration, dateStr, status);
+                    });
+                } else {
+                    html += `<div class="table-cell" style="grid-column: 1 / -1; text-align: center; color: var(--textSecondary); padding: 40px;">No activity found</div>`;
+                }
+            } else {
+                html += `<div class="table-cell" style="grid-column: 1 / -1; text-align: center; color: var(--textSecondary); padding: 40px;">Connect to backend to see activity</div>`;
+            }
+            table.innerHTML = html;
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(loadActivity, 200);
+        });
+    </script>
+</body>
+</html>

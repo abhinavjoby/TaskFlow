@@ -1,0 +1,222 @@
+body {
+    background-image: none !important;
+    background-color: var(--whitePure) !important;
+    overflow: hidden;
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+.bg-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('../assets/images/bglight.png'), var(--bgImage);
+    background-size: cover;
+    background-position: center bottom;
+    z-index: 1;
+    /* Zoom transitions via clip-path */
+    transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+    clip-path: inset(0% 0% 0% 0% round 0px);
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    transition-delay: 0.2s;
+    /* Give it a moment as BG zooms */
+}
+
+.screen.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* User's images show dark text on grass! */
+.title-text {
+    color: #1a1a1a;
+    font-size: 3.5rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    text-align: center;
+    text-shadow: 0px 4px 20px rgba(255, 255, 255, 0.7);
+}
+
+.next-circle-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.60);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), inset 0px 2px 4px rgba(255, 255, 255, 1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: #1a1a1a;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.next-circle-btn.small {
+    width: 45px;
+    height: 45px;
+}
+
+.next-circle-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), inset -2px 2px 4px rgba(255, 255, 255, 1);
+}
+
+/* Container defining inner content in masked states */
+.content-container {
+    width: 40vw;
+    height: 35vh;
+    min-width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    position: relative;
+}
+
+.content-container.tall {
+    height: 60vh;
+    width: 28vw;
+    min-width: 320px;
+    gap: 1rem;
+    justify-content: flex-start;
+    padding-top: 50px;
+}
+
+.content-container h2 {
+    font-size: 2.2rem;
+    color: #1a1a1a;
+    font-weight: 400;
+    text-align: center;
+}
+
+.intent-title {
+    color: #007bffc3 !important;
+    /* Muted blue from screenshot */
+    margin-bottom: 1rem;
+}
+
+/* Glass Input */
+.glass-input {
+    width: 80%;
+    max-width: 350px;
+    padding: 1rem 1.5rem;
+    font-size: 1.25rem;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: inset 0px 4px 4px 0px rgba(255, 255, 255, 1), 0 8px 24px rgba(0, 0, 0, 0.06);
+    border-radius: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    outline: none;
+    text-align: center;
+    color: #1a1a1a;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-input:focus {
+    transform: scale(1.02);
+    box-shadow: inset 0px 4px 4px 0px rgba(255, 255, 255, 1), 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Pill Cloud */
+.pill-cloud {
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+.glass-pill {
+    position: absolute;
+    padding: 0.8rem 1.6rem;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: inset 0px 4px 4px 0px rgba(255, 255, 255, 1), 0 8px 20px rgba(0, 0, 0, 0.06);
+    border-radius: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    font-size: 1.1rem;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.glass-pill:hover,
+.glass-pill.selected {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.pill-green {
+    background: rgba(184, 230, 153, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: inset 0px 2px 8px 0px rgba(255, 255, 255, 0.8), 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+.pill-green:hover,
+.pill-green.selected {
+    background: rgba(184, 230, 153, 0.8);
+}
+
+/* Hardcoded scatter pattern matching screenshot */
+.pill-cloud button:nth-child(1) {
+    top: 10px;
+    left: 40%;
+    transform: rotate(1deg);
+}
+
+.pill-cloud button:nth-child(2) {
+    top: 75px;
+    left: 21%;
+    transform: rotate(-6deg);
+}
+
+.pill-cloud button:nth-child(3) {
+    top: 70px;
+    left: 50%;
+    transform: rotate(4deg);
+}
+
+.pill-cloud button:nth-child(4) {
+    top: 140px;
+    left: 40%;
+    transform: rotate(2deg);
+}
+
+.pill-cloud button:nth-child(5) {
+    top: 200px;
+    left: 25%;
+    transform: rotate(-4deg);
+}
+
+.pill-cloud button:nth-child(6) {
+    top: 230px;
+    left: 49%;
+    transform: rotate(3deg);
+}
+
+.pill-cloud button:hover,
+.pill-cloud button.selected {
+    transform: scale(1.1) rotate(-1deg);
+}

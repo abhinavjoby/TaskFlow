@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskflow - Projects</title>
+    <link rel="stylesheet" href="css/root.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script type="text/javascript" src="/eel.js"></script>
+    <style>
+        body {
+            height: 100vh;
+            overflow: hidden;
+            background-image: var(--bgImage);
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+        }
+
+        .back-btn {
+            background: var(--glassAColor);
+            color: var(--textPrimary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            backdrop-filter: blur(10px);
+            font-size: 1.2rem;
+            box-shadow: var(--glassAShadow);
+            border: none;
+            cursor: pointer;
+        }
+
+        .brand-title {
+            font-size: 2rem;
+            color: var(--textPrimary);
+        }
+
+        .profile-btn-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e09c1c; 
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            font-size: 1.2rem;
+        }
+
+        .projects-container {
+            flex: 1;
+            padding: 20px 10vw 80px 10vw;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .projects-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .project-card {
+            background: var(--glassBColor);
+            backdrop-filter: blur(var(--glassBlur));
+            -webkit-backdrop-filter: blur(var(--glassBlur));
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .project-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-name {
+            color: var(--pillColor4); /* Sky blue from image */
+            font-size: 1.2rem;
+        }
+
+        .project-tasks {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .ptask-item {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: var(--textPrimary);
+        }
+
+        .status-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-done { background: var(--pillColor7); } /* Green */
+        .status-active { background: var(--pillColor2); } /* Yellow/Amber */
+        .status-pending { background: rgba(0,0,0,0.1); } 
+        [data-theme="dark"] .status-pending { background: rgba(255,255,255,0.2); }
+
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="index.html" class="back-btn sfMed">←</a>
+        <div class="brand-title instSerif">taskflow</div>
+        <div class="profile-btn-circle sfMed">👤</div>
+    </div>
+
+    <div class="projects-container" id="projectsGrid">
+        <!-- JS -->
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script>
+        async function loadProjects() {
+            try {
+                if (window.eel) {
+                const allProjects = await eel.get_all_projects()();
+                const allTasks = await eel.get_all_tasks()();
+                
+                if (allProjects && allProjects.length > 0) {
+                    let html = '';
+                    allProjects.forEach(p => {
+                        const color = getCategoryColor(p.subject);
+                        
+                        let tasksHtml = '';
+                        let count = 0;
+                        if (allTasks) {
+                            allTasks.forEach(t => {
+                                if (t.parent_refs && t.parent_refs.includes(p.id)) {
+                                    count++;
+                                    let cClass = 'status-pending';
+                                    if(t.status === 'Done') cClass = 'status-done';
+                                    else if(t.status === 'Active') cClass = 'status-active';
+                                    
+                                    tasksHtml += `
+                                        <div class="ptask-item sfReg">
+                                            <span>${t.title}</span>
+                                            <div class="status-circle ${cClass}"></div>
+                                        </div>
+                                    `;
+                                }
+                            });
+                        }
+                        
+                        if (count === 0) {
+                            tasksHtml = `<div class="sfReg" style="color:var(--textSecondary); font-size:0.9rem;">No tasks scheduled</div>`;
+                        }
+
+                        html += `
+                        <div class="project-card">
+                            <div class="project-left">
+                                <div class="pill-tiny sfMed" style="background:${color}; color:#fff; border-radius:15px; padding:4px 10px; font-size:0.8rem; width:fit-content;">${p.subject}</div>
+                                <div class="project-name sfMed">${p.name}</div>
+                            </div>
+                            <div class="project-tasks">
+                                ${tasksHtml}
+                            </div>
+                        </div>
+                        `;
+                    });
+                    document.getElementById('projectsGrid').innerHTML = html;
+                } else {
+                    document.getElementById('projectsGrid').innerHTML = `<div class="sfMed" style="color:var(--textSecondary); grid-column: span 2; text-align:center;">No projects created</div>`;
+                }
+            } else {
+                // Mock data
+                let mock = '';
+                for(let i=0; i<6; i++) {
+                    mock += `
+                    <div class="project-card">
+                        <div class="project-left">
+                            <div class="pill-tiny sfMed" style="background:var(--pillColor${(i%8)+1}); color:#fff; border-radius:15px; padding:4px 10px; font-size:0.8rem; width:fit-content;">SUBJECT</div>
+                            <div class="project-name sfMed">Project Name</div>
+                        </div>
+                        <div class="project-tasks">
+                            <div class="ptask-item sfReg"><span>tasks scheduled in project</span><div class="status-circle status-done"></div></div>
+                            <div class="ptask-item sfReg"><span>tasks scheduled in project</span><div class="status-circle status-done"></div></div>
+                            <div class="ptask-item sfReg"><span>tasks scheduled in project</span><div class="status-circle status-active"></div></div>
+                            <div class="ptask-item sfReg"><span>tasks scheduled in project</span><div class="status-circle status-pending"></div></div>
+                        </div>
+                    </div>`;
+                }
+                document.getElementById('projectsGrid').innerHTML = mock;
+            }
+            } catch (err) {
+                document.getElementById('projectsGrid').innerHTML = `<div style="color:red; font-size: 1.5rem; grid-column: span 2;">ERROR: ${err.message} \n ${err.stack}</div>`;
+            }
+        }
+        
+        window.addEventListener('load', () => {
+            setTimeout(loadProjects, 200);
+        });
+    </script>
+</body>
+</html>

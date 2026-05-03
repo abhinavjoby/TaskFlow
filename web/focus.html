@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskflow - Focus Mode</title>
+    <link rel="stylesheet" href="css/root.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script type="text/javascript" src="/eel.js"></script>
+    <style>
+        body {
+            height: 100vh;
+            overflow: hidden;
+            background-image: var(--bgImage);
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            transition: background-image 0.5s ease-in-out;
+        }
+
+        .focus-header {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .focus-title {
+            font-size: 1.5rem;
+            color: var(--textPrimary);
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            background: var(--glassAColor);
+            color: var(--textPrimary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            backdrop-filter: blur(10px);
+            font-size: 1.2rem;
+            box-shadow: var(--glassAShadow);
+        }
+
+        .timer-container {
+            text-align: center;
+            transform: translateY(-50px);
+        }
+
+        .timer-label {
+            font-size: 1.5rem;
+            color: var(--textPrimary);
+            margin-bottom: 10px;
+            letter-spacing: -0.04em;
+        }
+
+        .timer-display {
+            font-family: 'NothingFont', monospace;
+            font-size: 15rem;
+            color: var(--textPrimary);
+            line-height: 0.8;
+            margin: 0;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            height: 60px;
+        }
+
+        .play-pause-btn {
+            background: var(--glassBColor);
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s, background 0.2s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .play-pause-btn img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .play-pause-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .pause-menu {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            margin-top: 40px;
+            display: flex;
+            flex-direction: row;
+
+            gap: 20px;
+            width: 600px;
+            max-width: 90vw;
+            justify-content: center;
+        }
+
+        .controls.paused~.pause-menu {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .pause-circle-btn {
+            background: rgba(255, 255, 255, 0.4);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--textPrimary);
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            flex: 1;
+            aspect-ratio: 1;
+        }
+
+        .pause-icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.8;
+        }
+
+        [data-theme="dark"] .pause-circle-btn {
+            background: rgba(10, 10, 15, 0.4);
+        }
+
+        .pause-circle-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .track-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .track-arrow {
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .waveform-btn {
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: var(--glassBColor);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            color: var(--textPrimary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+        }
+    </style>
+    <script>
+        let savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+</head>
+
+<body>
+
+    <div class="focus-header instSerif">
+        <span style="font-size: 2.5rem; color: var(--textPrimary);">taskflow</span>
+    </div>
+
+    <div class="timer-container">
+        <div class="timer-label sfReg">
+            <span id="mlDot"
+                style="display:inline-block; width:12px; height:12px; border-radius:50%; background:var(--textSecondary); margin-right:8px; animation: blink 2s infinite;"></span>
+            <span id="mlLabel">connecting...</span>
+        </div>
+        <div class="timer-display" id="timeDisplay">00:00</div>
+
+        <div class="controls" id="controlsContainer">
+            <button class="play-pause-btn sfMed" id="playPauseBtn" onclick="toggleTimer()">
+                <img src="assets/pause.svg" alt="Pause">
+            </button>
+        </div>
+
+        <div class="pause-menu" id="pauseMenu">
+            <!-- Left: Quick Note -->
+            <div class="quick-note glassCard60" style="flex: 1; height: auto; display: flex; flex-direction: row;">
+                <div class="quick-note-left" style="margin-bottom: 15px; margin-left: 15px;">
+                    <div class="note-pill sfReg">quick note</div>
+                    <div class="instSerif"
+                        style="font-size:1.6rem; color:var(--textPrimary); line-height:1.1; margin:10px; text-align: left;">
+                        jot
+                        distracting <br>thoughts down...</div>
+                </div>
+                <textarea class="sfReg" id="distractingNotes" placeholder="Clear your mind..."
+                    style="flex: 1; min-height: 100px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 15px; color: var(--textPrimary); resize: none;"
+                    onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); if(this.value.trim()){ if(window.eel){eel.add_global_note(this.value.trim())();} this.value=''; this.blur(); showNoteSaved(); } }"></textarea>
+            </div>
+
+            <!-- Right: Music & Buttons -->
+            <div style="display: flex; flex-direction: column; gap: 15px; flex: 0.5;">
+                <!-- Music Card -->
+                <div class="glassCard60 sfReg"
+                    style="padding: 20px 25px; display: flex; align-items: center; justify-content: space-between; border-radius: 80px;">
+                    <div class="track-nav" style="margin: 0; gap: 20px;">
+                        <img src="assets/arrow-left.svg" class="track-arrow" onclick="prevTrack(event)" alt="<"
+                            style="cursor:pointer; width:18px;">
+                        <span id="currentTrack" class="instSerif" style="font-size: 1.4rem;">lofi</span>
+                        <img src="assets/arrow-right.svg" class="track-arrow" onclick="nextTrack(event)" alt=">"
+                            style="cursor:pointer; width:18px;">
+                    </div>
+                    <img src="assets/waveform.svg" class="waveform-btn" id="waveformBtn" onclick="toggleMusic(event)"
+                        alt="|||" style="cursor:pointer; width:28px;">
+                </div>
+
+                <!-- Restart / Exit -->
+                <div style="display: flex; gap: 15px; flex: 1;">
+                    <button class="pause-circle-btn sfMed" onclick="restartFocus()"
+                        style="flex: 1; aspect-ratio: 1; border-radius: 80px;">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">↺</div>
+                    </button>
+                    <button class="pause-circle-btn sfMed" onclick="exitFocus()"
+                        style="flex: 1; aspect-ratio: 1; border-radius: 80px; background: rgba(238, 82, 82, 0.2); border: 1px solid rgba(238, 82, 82, 0.3); color: #ffcccc;">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">✕</div>
+                    </button>
+                </div>
+            </div>
+
+            <div id="noteSavedToast" class="sfMed"
+                style="position:absolute; bottom:-40px; left:50%; transform:translateX(-50%); background:var(--pillColor7); color:white; padding:5px 15px; border-radius:15px; font-size:0.8rem; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:100;">
+                Saved to notes</div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="confirmEndModal">
+        <div class="modal-card sfReg">
+            <div style="font-size: 1.2rem; margin-bottom: 20px;" class="sfMed">Do you want to end the session now?</div>
+            <div style="display:flex; gap: 15px; justify-content: center;">
+                <button onclick="document.getElementById('confirmEndModal').style.display='none'"
+                    style="padding:10px 20px; border-radius:20px; background:transparent; color:var(--textPrimary); border:1px solid rgba(255,255,255,0.3); cursor:pointer;">Cancel</button>
+                <button onclick="doExitFocus()"
+                    style="padding:10px 20px; border-radius:20px; background:var(--pillColor1); color:white; border:none; cursor:pointer;">End
+                    Session</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="confirmRestartModal">
+        <div class="modal-card sfReg">
+            <div style="font-size: 1.2rem; margin-bottom: 20px;" class="sfMed">Do you want to restart the session?</div>
+            <div style="display:flex; gap: 15px; justify-content: center;">
+                <button onclick="document.getElementById('confirmRestartModal').style.display='none'"
+                    style="padding:10px 20px; border-radius:20px; background:transparent; color:var(--textPrimary); border:1px solid rgba(255,255,255,0.3); cursor:pointer;">Cancel</button>
+                <button onclick="doRestartFocus()"
+                    style="padding:10px 20px; border-radius:20px; background:var(--pillColor4); color:white; border:none; cursor:pointer;">Restart</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="overviewModal">
+        <div class="modal-card sfReg">
+            <div style="font-size: 1.5rem; margin-bottom: 15px;" class="instSerif">Session Overview</div>
+            <div style="text-align: left; margin-bottom: 25px; line-height: 1.6;">
+                <div>Focus Percentage: <strong id="ovFocus">--%</strong></div>
+                <div>Drowsy Events: <strong id="ovDrowsy">--</strong></div>
+                <div>Distracted Events: <strong id="ovDistracted">--</strong></div>
+                <div>Quality Score: <strong id="ovScore">--/100</strong></div>
+            </div>
+            <button onclick="window.location.href='index.html'"
+                style="padding:10px 30px; border-radius:20px; background:var(--pillColor7); color:white; border:none; cursor:pointer;"
+                class="sfMed">Return to Dashboard</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="cameraErrorModal">
+        <div class="modal-card sfReg">
+            <div style="font-size: 2rem; margin-bottom: 10px;">📷</div>
+            <div style="font-size: 1.2rem; margin-bottom: 15px;" class="sfMed">Camera unavailable</div>
+            <div style="font-size: 0.9rem; color: var(--textSecondary); margin-bottom: 20px; line-height: 1.5;">
+                Focus tracking needs camera access.<br>
+                Open <strong>System Settings → Privacy & Security → Camera</strong><br>
+                and enable it for your Terminal app.
+            </div>
+            <div style="display:flex; gap: 15px; justify-content: center;">
+                <button onclick="document.getElementById('cameraErrorModal').style.display='none'"
+                    style="padding:10px 20px; border-radius:20px; background:transparent; color:var(--textPrimary); border:1px solid rgba(255,255,255,0.3); cursor:pointer;">Continue
+                    without camera</button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="alertSound" src="assets/alert.mp3" preload="auto"></audio>
+
+
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const title = urlParams.get('title') || 'Free Focus';
+        const subject = urlParams.get('subject') || 'General';
+        const taskId = urlParams.get('taskId');
+        const durationStr = urlParams.get('duration');
+        let totalSeconds = 25 * 60; // Default to 25 minutes
+
+        let timerInterval;
+        let isRunning = false;
+
+        function updateDisplay() {
+            let m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            let s = (totalSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('timeDisplay').innerText = `${m}:${s}`;
+        }
+
+        let isMusicPlaying = true;
+        const tracks = ['lofi', 'white noise', 'brown noise'];
+        let trackIndex = 0;
+
+        let mlInterval;
+        let lastStatus = "INITIALIZING";
+
+        async function startML() {
+            if (window.eel) {
+                try {
+                    await eel.start_webcam_session(taskId || '', subject || 'General')();
+                } catch (e) {
+                    console.error("Failed to start webcam session:", e);
+                }
+                mlInterval = setInterval(async () => {
+                    try {
+                        const status = await eel.get_webcam_status()();
+                        const dot = document.getElementById('mlDot');
+                        const label = document.getElementById('mlLabel');
+
+                        if (status === "INITIALIZING" || status === "OFF") {
+                            dot.style.background = "var(--textSecondary)";
+                            dot.style.animation = "blink 2s infinite";
+                            if (label) label.innerText = "connecting...";
+                        } else if (status === "ERROR") {
+                            dot.style.background = "var(--pillColor1)";
+                            dot.style.animation = "none";
+                            if (label) label.innerText = "camera unavailable";
+                            // Show error modal once
+                            if (lastStatus !== "ERROR") {
+                                document.getElementById('cameraErrorModal').style.display = 'flex';
+                            }
+                        } else if (status === "FOCUSED") {
+                            dot.style.background = "var(--pillColor7)";
+                            dot.style.animation = "blink 2s infinite";
+                            if (label) label.innerText = "focus";
+                        } else if (status === "DROWSY") {
+                            dot.style.background = "var(--pillColor1)";
+                            dot.style.animation = "blink 0.5s infinite";
+                            if (label) label.innerText = "drowsy";
+                        } else if (status === "DISTRACTED") {
+                            dot.style.background = "var(--pillColor2)";
+                            dot.style.animation = "blink 0.8s infinite";
+                            if (label) label.innerText = "distracted";
+                        }
+
+                        if ((status === "DROWSY" || status === "DISTRACTED") && lastStatus !== status) {
+                            const audio = document.getElementById('alertSound');
+                            if (audio) { audio.currentTime = 0; audio.play().catch(e => console.log(e)); }
+                        }
+                        lastStatus = status;
+                    } catch (e) {
+                        console.error("ML poll error:", e);
+                    }
+                }, 1500);
+            }
+        }
+
+        function exitFocus() {
+            document.getElementById('confirmEndModal').style.display = 'flex';
+        }
+
+        async function doExitFocus() {
+            document.getElementById('confirmEndModal').style.display = 'none';
+            clearInterval(timerInterval);
+            if (mlInterval) clearInterval(mlInterval);
+
+            if (window.eel) {
+                if (taskId) await eel.update_task_status(taskId, 'Ongoing')();
+                const summary = await eel.stop_webcam_session()();
+                console.log("Session summary:", JSON.stringify(summary));
+                if (summary && typeof summary === 'object') {
+                    const fp = summary["Focus_Percentage"] ?? summary.Focus_Percentage ?? 0;
+                    const dc = summary["Drowsy_Count"] ?? summary.Drowsy_Count ?? 0;
+                    const dic = summary["Distracted_Count"] ?? summary.Distracted_Count ?? 0;
+                    const ql = summary["Quality_Label"] ?? summary.Quality_Label ?? 0;
+                    document.getElementById('ovFocus').innerText = fp + "%";
+                    document.getElementById('ovDrowsy').innerText = dc;
+                    document.getElementById('ovDistracted').innerText = dic;
+                    document.getElementById('ovScore').innerText = ql + "/100";
+                }
+            }
+            document.getElementById('overviewModal').style.display = 'flex';
+        }
+
+        function restartFocus() {
+            document.getElementById('confirmRestartModal').style.display = 'flex';
+        }
+
+        async function doRestartFocus() {
+            document.getElementById('confirmRestartModal').style.display = 'none';
+            if (window.eel) await eel.stop_webcam_session()();
+            if (mlInterval) clearInterval(mlInterval);
+            totalSeconds = 25 * 60;
+            updateDisplay();
+            startML();
+        }
+
+
+        function showNoteSaved() {
+            const toast = document.getElementById('noteSavedToast');
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+
+        function prevTrack(e) {
+            e.stopPropagation();
+            trackIndex = (trackIndex - 1 + tracks.length) % tracks.length;
+            document.getElementById('currentTrack').innerText = tracks[trackIndex];
+        }
+
+        function nextTrack(e) {
+            e.stopPropagation();
+            trackIndex = (trackIndex + 1) % tracks.length;
+            document.getElementById('currentTrack').innerText = tracks[trackIndex];
+        }
+
+        function toggleMusic(e) {
+            e.stopPropagation();
+            isMusicPlaying = !isMusicPlaying;
+            document.getElementById('waveformBtn').style.opacity = isMusicPlaying ? '1' : '0.4';
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('playPauseBtn');
+            const container = document.getElementById('controlsContainer');
+
+            if (isRunning) {
+                // Pause
+                clearInterval(timerInterval);
+                btn.innerHTML = '<img src="assets/play.svg" alt="Play">';
+                container.classList.add('paused');
+            } else {
+                // Play
+                timerInterval = setInterval(() => {
+                    if (totalSeconds > 0) {
+                        totalSeconds--;
+                        updateDisplay();
+                    } else {
+                        finishSession();
+                    }
+                }, 1000);
+                btn.innerHTML = '<img src="assets/pause.svg" alt="Pause">';
+                container.classList.remove('paused');
+            }
+            isRunning = !isRunning;
+        }
+
+        async function finishSession() {
+            clearInterval(timerInterval);
+            if (mlInterval) clearInterval(mlInterval);
+            if (window.eel) {
+                const durPassed = 25 - Math.floor(totalSeconds / 60);
+                await eel.log_focus_session(title, subject, durPassed)();
+                const summary = await eel.stop_webcam_session()();
+                if (summary) {
+                    document.getElementById('ovFocus').innerText = summary.Focus_Percentage + "%";
+                    document.getElementById('ovDrowsy').innerText = summary.Drowsy_Count;
+                    document.getElementById('ovDistracted').innerText = summary.Distracted_Count;
+                    document.getElementById('ovScore').innerText = summary.Quality_Label + "/100";
+                }
+            }
+            document.getElementById('overviewModal').style.display = 'flex';
+        }
+
+        updateDisplay();
+        toggleTimer(); // Auto-start
+        startML(); // Start Webcam ML
+    </script>
+</body>
+
+</html>

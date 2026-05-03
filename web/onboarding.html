@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskflow</title>
+    <link rel="stylesheet" href="css/root.css">
+    <link rel="stylesheet" href="css/onboarding.css">
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+
+<body>
+
+    <!-- The zooming background layer -->
+    <div class="bg-layer" id="bgLayer"></div>
+
+    <!-- Screen 1: Welcome -->
+    <div class="screen active" id="screen1">
+        <h1 class="instSerif title-text">welcome to <span
+                style="-webkit-text-stroke: 1.3px currentColor;">taskflow</span>
+        </h1>
+        <button class="next-circle-btn" onclick="goToScreen(2)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Screen 2: Name Input -->
+    <div class="screen" id="screen2">
+        <div class="content-container">
+            <h2 class="instSerif"">what should we call <em style=" font-style: italic;">you</em>?</h2>
+            <input type="text" id="nameInput" class="glass-input sfMed" autocomplete="off" placeholder="" />
+            <button class="next-circle-btn small" onclick="goToScreen(3)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Screen 3: Intent -->
+    <div class="screen" id="screen3">
+        <div class="content-container tall">
+            <h2 class="instSerif intent-title">what will<br>you use<br><span style="-webkit-text-stroke: 1.3px
+                    #007Aff; color: #007aff;">taskflow</span> for?</h2>
+            <div class="pill-cloud" id="pillCloud">
+                <button class="glass-pill sfMed">🧰 for work</button>
+                <button class="glass-pill sfMed">⏰ for routine</button>
+                <button class="glass-pill sfMed">📚 for study</button>
+                <button class="glass-pill sfMed">💼 for business</button>
+                <button class="glass-pill sfMed pill-green">🤔 uhm...</button>
+                <button class="glass-pill sfMed pill-green">🤷 ahh idk...</button>
+            </div>
+            <div style="position: absolute; bottom: 30px; display: flex; justify-content: center; width: 100%;">
+                <button class="next-circle-btn small" id="intentNextBtn" onclick="goToScreen(4)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 4: Lets get going -->
+    <div class="screen" id="screen4">
+        <h1 class="instSerif title-text">lets get going!</h1>
+        <button class="next-circle-btn" onclick="finishOnboarding()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+    </div>
+
+    <script src="js/onboarding.js"></script>
+</body>
+
+</html>

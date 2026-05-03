@@ -1,0 +1,209 @@
+/* root.css */
+
+/* 1. FONT-FACE DEFINITIONS */
+@font-face {
+    font-family: 'SFProMedium';
+    src: url('../assets/fonts/SFPRODISPLAYMEDIUM.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'SFProRegular';
+    src: url('../assets/fonts/SFPRODISPLAYREGULAR.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'SFProBold';
+    src: url('../assets/fonts/SFPRODISPLAYBOLD.OTF') format('opentype');
+}
+
+@font-face {
+    font-family: 'InstrumentSerif';
+    src: url('../assets/fonts/InstrumentSerif-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'NothingFont';
+    src: url('../assets/fonts/nothing-font-5x7.ttf') format('truetype');
+}
+
+/* 2. CORE VARIABLES */
+:root {
+    /* Typography Engines */
+    --sfMed: 'SFProMedium', -apple-system, sans-serif;
+    --sfReg: 'SFProRegular', -apple-system, sans-serif;
+    --sfBold: 'SFProBold', -apple-system, sans-serif;
+    --instSerif: 'InstrumentSerif', serif;
+    --dotFont: 'NothingFont', monospace;
+
+    /* Spacing Specs */
+    --sfLetterSpacing: -0.06em;
+    --dotLetterSpacing: -0.06em;
+
+    /* Vibrant Subject Color Pool (Randomly assigned at creation) */
+    --pillColor1: #ee5252;
+    /* Vibrant Coral */
+    --pillColor2: #e09c1c;
+    /* Bright Amber */
+    --pillColor3: #1dc8b7;
+    /* Fresh Teal */
+    --pillColor4: #4AC9FF;
+    /* Sky Blue */
+    --pillColor5: #795ef3;
+    /* Electric Violet */
+    --pillColor6: #e7458e;
+    /* Hot Pink */
+    --pillColor7: #2fcc8e;
+    /* Emerald Mint */
+    --pillColor8: #8ed51b;
+    /* Neon Lime */
+
+    /* Base Palette */
+    --whitePure: #FFFFFF;
+    --blackTint: #0A0A0F;
+
+    /* Responsive Blur */
+    --glassBlur: 0.9375rem;
+    /* ~15px equivalent */
+}
+
+/* 3. THEME VARIANTS */
+[data-theme="light"] {
+    --bgImage: url('../assets/images/bglight.png');
+
+    /* Text Colors */
+    --textPrimary: rgba(10, 10, 15, 0.9);
+    --textSecondary: rgba(10, 10, 15, 0.6);
+    --textInverse: #FFFFFF;
+    --stf: rgb(224, 224, 224);
+
+    /* Glass Type A (60% Opacity + White Inner Shadow) */
+    --glassAColor: rgba(255, 255, 255, 0.6);
+    --glassAShadow: inset 4px 4px 4px 0px rgba(255, 255, 255, 1);
+
+    /* Glass Type B (90% Opacity) */
+    --glassBColor: rgba(255, 255, 255, 0.77);
+    --taskbg: rgb(255, 255, 255);
+
+    --accentBlue: #007aff;
+    --navGlowColor: #ffffff;
+    /* Tunable glow color for light mode */
+}
+
+[data-theme="dark"] {
+    --bgImage: url('../assets/images/bgdark.png');
+
+    /* Text Colors */
+    --textPrimary: rgba(255, 255, 255, 0.95);
+    --textSecondary: rgba(255, 255, 255, 0.5);
+    --textInverse: #0A0A0F;
+    --stf: rgb(66, 66, 66);
+
+    /* Glass Type A (60% Opacity + Subtle Inner Shadow) */
+    --glassAColor: rgba(10, 10, 15, 0.6);
+    --glassAShadow: inset 4px 4px 4px 0px rgba(255, 255, 255, 0.05);
+
+    /* Glass Type B (90% Opacity) */
+    --glassBColor: rgba(10, 10, 15, 0.9);
+    --taskbg: rgb(10, 10, 15);
+
+    --accentBlue: #60A5FA;
+    --navGlowColor: #4f3e9259;
+    /* Tunable glow color for dark mode */
+}
+
+/* 4. UTILITY CLASSES */
+
+/* Typography */
+.sfMed {
+    font-family: var(--sfMed);
+    letter-spacing: var(--sfLetterSpacing);
+    font-weight: 500;
+}
+
+.sfReg {
+    font-family: var(--sfReg);
+    letter-spacing: var(--sfLetterSpacing);
+    font-weight: 400;
+}
+
+.instSerif {
+    font-family: var(--instSerif);
+}
+
+.dotFont {
+    font-family: var(--dotFont);
+    letter-spacing: var(--dotLetterSpacing);
+}
+
+/* Dynamic Pill Backgrounds */
+.pill1 {
+    background-color: var(--pillColor1);
+}
+
+.pill2 {
+    background-color: var(--pillColor2);
+}
+
+.pill3 {
+    background-color: var(--pillColor3);
+}
+
+.pill4 {
+    background-color: var(--pillColor4);
+}
+
+.pill5 {
+    background-color: var(--pillColor5);
+}
+
+.pill6 {
+    background-color: var(--pillColor6);
+}
+
+.pill7 {
+    background-color: var(--pillColor7);
+}
+
+.pill8 {
+    background-color: var(--pillColor8);
+}
+
+/* Glass Components (No Borders) */
+.glassCard60 {
+    background: var(--glassAColor);
+    backdrop-filter: blur(var(--glassBlur));
+    -webkit-backdrop-filter: blur(var(--glassBlur));
+    box-shadow: var(--glassAShadow);
+    border-radius: 1.25rem;
+    color: var(--textPrimary);
+    border: none;
+}
+
+.glassCard90 {
+    background: var(--glassBColor);
+    backdrop-filter: blur(var(--glassBlur));
+    -webkit-backdrop-filter: blur(var(--glassBlur));
+    border-radius: 1.25rem;
+    color: var(--textPrimary);
+    border: none;
+}
+
+/* 5. GLOBAL RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-image: var(--bgImage);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-family: var(--sfReg);
+    color: var(--textPrimary);
+}
