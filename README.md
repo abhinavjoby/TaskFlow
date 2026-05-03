@@ -27,8 +27,8 @@ It acts as a comprehensive study and task planner by not only managing your task
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/taskflow.git
-   cd taskflow
+   git clone https://github.com/abhinavjoby/TaskFlow.git
+   cd TaskFlow
    ```
 
 2. **Create a virtual environment:**
