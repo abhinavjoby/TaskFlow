@@ -10,6 +10,5 @@ __pycache__/
 data/*.json
 data/*.csv
 
-
 # IDE
 .vscode/
