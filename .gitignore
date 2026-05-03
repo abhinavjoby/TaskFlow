@@ -6,7 +6,7 @@ __pycache__/
 # Mac System Files
 .DS_Store
 
-# Data (Optional: keep this out if you want teachers to start with a fresh DB)
+# Data
 data/*.json
 data/*.csv
 
