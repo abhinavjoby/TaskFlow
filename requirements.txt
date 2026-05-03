@@ -1,7 +1,6 @@
 eel==0.16.0
-pydantic
 opencv-python
 mediapipe==0.10.14
-# other deps from backend.requirements
 scikit-learn
 pandas
+numpy
