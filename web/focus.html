@@ -275,7 +275,7 @@
                             style="cursor:pointer; width:18px;">
                     </div>
                     <img src="assets/waveform.svg" class="waveform-btn" id="waveformBtn" onclick="toggleMusic(event)"
-                        alt="|||" style="cursor:pointer; width:28px;">
+                        alt="|||" style="cursor:pointer; width:28px; opacity: 0.4;">
                 </div>
 
                 <!-- Restart / Exit -->
@@ -356,6 +356,7 @@
     </div>
 
     <audio id="alertSound" src="assets/alert.mp3" preload="auto"></audio>
+    <audio id="bgMusic" src="assets/lofi.mp3" loop preload="auto"></audio>
 
 
 
@@ -376,8 +377,9 @@
             document.getElementById('timeDisplay').innerText = `${m}:${s}`;
         }
 
-        let isMusicPlaying = true;
+        let isMusicPlaying = false; // Default off until user toggles, or they might prefer it on. Let's set it to false so play/pause icon reflects reality if autoplay fails.
         const tracks = ['lofi', 'white noise', 'brown noise'];
+        const trackFiles = ['assets/lofi.mp3', 'assets/white.mp3', 'assets/brown.mp3'];
         let trackIndex = 0;
 
         let mlInterval;
@@ -481,22 +483,40 @@
             setTimeout(() => { toast.style.opacity = '0'; }, 2000);
         }
 
+        function changeTrack() {
+            const audio = document.getElementById('bgMusic');
+            audio.src = trackFiles[trackIndex];
+            if (isMusicPlaying) {
+                audio.play().catch(e => console.log('Audio play blocked:', e));
+            }
+        }
+
         function prevTrack(e) {
             e.stopPropagation();
             trackIndex = (trackIndex - 1 + tracks.length) % tracks.length;
             document.getElementById('currentTrack').innerText = tracks[trackIndex];
+            changeTrack();
         }
 
         function nextTrack(e) {
             e.stopPropagation();
             trackIndex = (trackIndex + 1) % tracks.length;
             document.getElementById('currentTrack').innerText = tracks[trackIndex];
+            changeTrack();
         }
 
         function toggleMusic(e) {
             e.stopPropagation();
             isMusicPlaying = !isMusicPlaying;
-            document.getElementById('waveformBtn').style.opacity = isMusicPlaying ? '1' : '0.4';
+            const audio = document.getElementById('bgMusic');
+            const btn = document.getElementById('waveformBtn');
+            if (isMusicPlaying) {
+                audio.play().catch(e => console.log('Audio play blocked:', e));
+                btn.style.opacity = '1';
+            } else {
+                audio.pause();
+                btn.style.opacity = '0.4';
+            }
         }
 
         function toggleTimer() {

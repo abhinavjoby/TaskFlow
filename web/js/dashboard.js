@@ -293,19 +293,19 @@ window._pillsExpanded = false;
 
 function renderFilterPillsUI() {
     if (!window._cachedCategories) return;
-    
+
     let filterHtml = '';
     const maxVisible = 4;
     const isExpanded = window._pillsExpanded;
     const catsToShow = isExpanded ? window._cachedCategories : window._cachedCategories.slice(0, maxVisible);
-    
+
     catsToShow.forEach(c => {
         const color = getCategoryColor(c);
         const isSelected = window.currentUrgentFilter === c;
         // Make selected pill solid, non-selected semi-transparent
         filterHtml += `<button class="filter-pill sfMed" style="background:${color}; color:#fff; ${isSelected ? 'border: 2px solid var(--textPrimary); transform: scale(1.05); opacity: 1;' : 'opacity: 0.5;'}" onclick="applyFilter('${c}')">${c}</button>`;
     });
-    
+
     if (window._cachedCategories.length > maxVisible) {
         if (!isExpanded) {
             filterHtml += `<button class="filter-pill sfMed" style="background:rgba(255,255,255,0.2); color:var(--textPrimary); border:1px solid rgba(255,255,255,0.2);" onclick="toggleFilterPills(true)">▾</button>`;
@@ -313,7 +313,7 @@ function renderFilterPillsUI() {
             filterHtml += `<button class="filter-pill sfMed" style="background:rgba(255,255,255,0.2); color:var(--textPrimary); border:1px solid rgba(255,255,255,0.2);" onclick="toggleFilterPills(false)">▴</button>`;
         }
     }
-    
+
     document.getElementById('filterPills').innerHTML = filterHtml;
 }
 

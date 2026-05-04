@@ -39,12 +39,14 @@
             <button class="control-pill fmb" onclick="togglePopup('focusPopup', this)">
                 <span class="sfMed" style="font-size:0.8rem; letter-spacing:-0.4px;">focus mode</span>
                 <!-- Asset placeholder for dot matrix -->
-                <img src="assets/icons/focusdot.png" alt="" />
+                <img src="assets/icons/focusdot.png" alt="" width="25px" />
             </button>
 
             <!-- Dark Mode Toggle -->
-            <button class="theme-toggle glassCard60" onclick="toggleTheme()">
-                <img src="assets/icons/darkmode.png" alt="O" />
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <svg class="theme-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="height: 100%; width: auto;">
+                    <path d="M16 3C13.4288 3 10.9154 3.76244 8.77759 5.1909C6.63975 6.61935 4.97351 8.64968 3.98957 11.0251C3.00563 13.4006 2.74819 16.0144 3.2498 18.5362C3.75141 21.0579 4.98953 23.3743 6.80762 25.1924C8.6257 27.0105 10.9421 28.2486 13.4638 28.7502C15.9856 29.2518 18.5995 28.9944 20.9749 28.0104C23.3503 27.0265 25.3807 25.3603 26.8091 23.2224C28.2376 21.0846 29 18.5712 29 16C28.9964 12.5533 27.6256 9.24882 25.1884 6.81163C22.7512 4.37445 19.4467 3.00364 16 3ZM5.00001 16C5.00331 13.0836 6.1633 10.2877 8.22548 8.22548C10.2877 6.1633 13.0836 5.00331 16 5V27C13.0836 26.9967 10.2877 25.8367 8.22548 23.7745C6.1633 21.7123 5.00331 18.9164 5.00001 16Z" fill="var(--textPrimary)"/>
+                </svg>
             </button>
 
             <!-- Profile -->
@@ -100,8 +102,8 @@
                         </div>
 
                         <div class="glassCard60 analytics-card">
-                            <p class="chart-icon">📈</p>
-                            <p class="sfMed">You were more focused this week compared to last week!</p>
+                            <p class="chart-icon">📉</p>
+                            <p class="sfMed">You were less focused this week compared to last week!</p>
                             <button class="btn-small sfMed" onclick="window.location.href='stats.html'">view
                                 analytics</button>
                         </div>
@@ -149,7 +151,7 @@
                                 <div class="instSerif"
                                     style="font-size:1.4rem; color:var(--textPrimary); line-height:1.1; padding-left: 5px;">
                                     jot
-                                    something<br>down...</div>
+                                    anything<br>down...</div>
                             </div>
                             <textarea class="sfReg" placeholder=""
                                 onkeydown="if(event.key === 'Enter') { event.preventDefault(); if(this.value.trim()){ if(window.eel){eel.add_global_note(this.value.trim())();} this.value=''; this.blur(); alert('Note saved!'); } }"></textarea>
@@ -207,7 +209,8 @@
     </script>
     <div id="focusPopup" class="popup-card glassCard90" style="width: 280px; position: fixed;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-            <span class="instSerif" style="font-size: 1.4rem; color: var(--textPrimary); -webkit-text-stroke: 0.5px;">focus mode</span>
+            <span class="instSerif"
+                style="font-size: 1.4rem; color: var(--textPrimary); -webkit-text-stroke: 0.5px;">focus mode</span>
         </div>
         <div style="margin-bottom: 15px;">
             <span class="popup-lbl sfReg">name</span>
@@ -230,30 +233,41 @@
     </div>
 
     <div id="profilePopup" class="popup-card glassCard90" style="width: 250px; position: fixed;">
-        <div id="profileUsername" class="sfMed" style="font-size: 1.4rem; color: var(--textPrimary); margin-bottom: 10px;">Username</div>
+        <div id="profileUsername" class="sfMed"
+            style="font-size: 1.4rem; color: var(--textPrimary); margin-bottom: 10px;">Username</div>
         <div style="margin-bottom: 20px;">
-            <label for="energySlider" class="sfReg" style="font-size: 0.8rem; color: var(--textSecondary); display:flex; justify-content:space-between;">
+            <label for="energySlider" class="sfReg"
+                style="font-size: 0.8rem; color: var(--textSecondary); display:flex; justify-content:space-between;">
                 <span>Energy Level</span>
                 <span id="energyLabel" style="color:var(--pillColor2);">Med</span>
             </label>
-            <input type="range" id="energySlider" min="1" max="3" value="2" class="custom-slider" style="width:100%; margin-top:5px; accent-color:var(--pillColor2);" onchange="updateEnergyLevel(this.value)" oninput="updateEnergyLabel(this.value)">
+            <input type="range" id="energySlider" min="1" max="3" value="2" class="custom-slider"
+                style="width:100%; margin-top:5px; accent-color:var(--pillColor2);"
+                onchange="updateEnergyLevel(this.value)" oninput="updateEnergyLabel(this.value)">
         </div>
         <div style="display:flex; flex-direction:column; gap:15px; margin-bottom: 25px;">
-            <div style="display:flex; align-items:center; gap: 8px; cursor:pointer; color:var(--textPrimary);" class="sfReg" onclick="window.location.href='stats.html'">
+            <div style="display:flex; align-items:center; gap: 8px; cursor:pointer; color:var(--textPrimary);"
+                class="sfReg" onclick="window.location.href='stats.html'">
                 <span>your data</span>
-                <span style="opacity:0.6; font-size:1.1rem; border: 1px dashed var(--textPrimary); border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center;">→</span>
+                <span
+                    style="opacity:0.6; font-size:1.1rem; border: 1px dashed var(--textPrimary); border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center;">→</span>
             </div>
-            <div style="display:flex; align-items:center; gap: 8px; cursor:pointer; color:var(--textPrimary);" class="sfReg" onclick="window.location.href='activity.html'">
+            <div style="display:flex; align-items:center; gap: 8px; cursor:pointer; color:var(--textPrimary);"
+                class="sfReg" onclick="window.location.href='activity.html'">
                 <span>activity</span>
-                <span style="opacity:0.6; font-size:1.1rem; border: 1px dashed var(--textPrimary); border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center;">→</span>
+                <span
+                    style="opacity:0.6; font-size:1.1rem; border: 1px dashed var(--textPrimary); border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center;">→</span>
             </div>
-            <div style="display:flex; align-items:center; gap: 8px; cursor:pointer; color:var(--textPrimary);" class="sfReg" onclick="confirmResetProfile()">
+            <div style="display:flex; align-items:center; gap: 8px; cursor:pointer; color:var(--textPrimary);"
+                class="sfReg" onclick="confirmResetProfile()">
                 <span>reset profile</span>
-                <span style="opacity:0.6; font-size:1.1rem; border: 1px dashed var(--textPrimary); border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center;">→</span>
+                <span
+                    style="opacity:0.6; font-size:1.1rem; border: 1px dashed var(--textPrimary); border-radius:50%; width:18px; height:18px; display:flex; align-items:center; justify-content:center;">→</span>
             </div>
         </div>
         <div style="display:flex; justify-content:center;">
-            <button class="btn-blue sfMed" style="padding: 10px 25px; font-size: 1.1rem;" onclick="window.location.href='about.html'">about us</button>
+            <button class="btn-blue sfMed" style="padding: 10px 25px; font-size: 1.1rem;"
+                onclick="window.location.href='about.html'">about us</button>
         </div>
     </div>
 
