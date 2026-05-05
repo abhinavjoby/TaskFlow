@@ -27,12 +27,6 @@ CSV_FILE  = "data/focus_sessions.csv"
 MODEL_DIR  = "models"
 MODEL_FILE = os.path.join(MODEL_DIR, "model.pkl")
 
-SUBJECT_DIFFICULTY = {
-    "DSA": 5, "OOP": 4, "EEE": 4,
-    "MFC": 3, "UID": 3,
-    "EOC": 2, 
-}
-SUBJECTS   = list(SUBJECT_DIFFICULTY.keys())
 TIME_SLOTS = [8, 9, 10, 11, 14, 15, 16, 19, 20, 21]
 
 
@@ -112,12 +106,17 @@ def get_subject_recommendations(model, df):
         af = df[df["Subject"] == sub]["Focus_Percentage"].mean()
         if pd.isna(af):
             af = 70.0
+            
+        diff = df[df["Subject"] == sub]["subject_difficulty"].mean()
+        if pd.isna(diff):
+            diff = 3.0
+
         scores = []
         for h in TIME_SLOTS:
             samp = pd.DataFrame([{
                 "hour_sin":             np.sin(2*np.pi*h/24),
                 "hour_cos":             np.cos(2*np.pi*h/24),
-                "subject_difficulty":   SUBJECT_DIFFICULTY.get(sub, 3),
+                "subject_difficulty":   diff,
                 "Duration_Minutes":     45,
                 "drowsy_rate":          0.05,
                 "distracted_rate":      0.05,

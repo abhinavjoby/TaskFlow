@@ -366,7 +366,11 @@
         const subject = urlParams.get('subject') || 'General';
         const taskId = urlParams.get('taskId');
         const durationStr = urlParams.get('duration');
-        let totalSeconds = 25 * 60; // Default to 25 minutes
+        let initialMinutes = durationStr ? parseInt(durationStr) : 25;
+        if (isNaN(initialMinutes) || initialMinutes <= 0) {
+            initialMinutes = 25;
+        }
+        let totalSeconds = initialMinutes * 60;
 
         let timerInterval;
         let isRunning = false;
@@ -471,7 +475,7 @@
             document.getElementById('confirmRestartModal').style.display = 'none';
             if (window.eel) await eel.stop_webcam_session()();
             if (mlInterval) clearInterval(mlInterval);
-            totalSeconds = 25 * 60;
+            totalSeconds = initialMinutes * 60;
             updateDisplay();
             startML();
         }
@@ -548,7 +552,7 @@
             clearInterval(timerInterval);
             if (mlInterval) clearInterval(mlInterval);
             if (window.eel) {
-                const durPassed = 25 - Math.floor(totalSeconds / 60);
+                const durPassed = initialMinutes - Math.floor(totalSeconds / 60);
                 await eel.log_focus_session(title, subject, durPassed)();
                 const summary = await eel.stop_webcam_session()();
                 if (summary) {
